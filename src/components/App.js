@@ -1,19 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useLocalStorage } from 'hooks/useLocalStorage';
 import { Wrapper } from './Wrapper.styled';
 import { Section } from './Section/Section';
 import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
 import { StatisticEmpty } from './StatisticEmpty';
 import { Statistics } from './Statistic/Statistic';
 import { GlobalStyle } from './GlobalStyle';
-const useLocalStorage = (initialValue, key) => {
-  const [data, setData] = useState(
-    () => JSON.parse(localStorage.getItem(key)) ?? initialValue
-  );
-  useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(data));
-  }, [data]);
-  return [data, setData];
-};
+
 export const App = () => {
   const [good, setGood] = useLocalStorage(0, 'good');
   const [neutral, setNeutral] = useLocalStorage(0, 'neutral');
