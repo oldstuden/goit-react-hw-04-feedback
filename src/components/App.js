@@ -1,49 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Wrapper } from './Wrapper.styled';
 import { Section } from './Section/Section';
 import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
 import { StatisticEmpty } from './StatisticEmpty';
 import { Statistics } from './Statistic/Statistic';
 import { GlobalStyle } from './GlobalStyle';
-
+const useLocalStorage = (initialValue, key) => {
+  const [data, setData] = useState(
+    () => JSON.parse(localStorage.getItem(key)) ?? initialValue
+  );
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(data));
+  }, [data]);
+  return [data, setData];
+};
 export const App = () => {
-  const [good, setGood] = useState(
-    () => JSON.parse(window.localStorage.getItem('good')) ?? 0
-  );
-  const [neutral, setNeutral] = useState(
-    () => JSON.parse(window.localStorage.getItem('neutral')) ?? 0
-  );
-  const [bad, setBad] = useState(
-    () => JSON.parse(window.localStorage.getItem('bad')) ?? 0
-  );
+  const [good, setGood] = useLocalStorage(0, 'good');
+  const [neutral, setNeutral] = useLocalStorage(0, 'neutral');
+  const [bad, setBad] = useLocalStorage(0, 'bad');
+
   const handleClick = value => {
-    switch (value) {
-      case 'good':
-        setGood(prev => {
-          const newValue = prev + 1;
-          window.localStorage.setItem('good', JSON.stringify(newValue));
-          return newValue;
-        });
-        break;
-
-      case 'neutral':
-        setNeutral(prev => {
-          const newValue = prev + 1;
-          window.localStorage.setItem('neutral', JSON.stringify(newValue));
-          return newValue;
-        });
-        break;
-
-      case 'bad':
-        setBad(prev => {
-          const newValue = prev + 1;
-          window.localStorage.setItem('bad', JSON.stringify(newValue));
-          return newValue;
-        });
-        break;
-      default:
-        return;
-    }
+    if (value === 'good') return setGood(prev => prev + 1);
+    if (value === 'neutral') return setNeutral(prev => prev + 1);
+    if (value === 'bad') return setBad(prev => prev + 1);
   };
   const totalFeedback = good + neutral + bad;
 
